@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { LightningField } from '@/components/LightningField';
 import { AdminDashboard } from '@/components/AdminDashboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,6 @@ export default function AdminPage() {
   if (!isAuthenticated) {
     return (
       <div className="relative min-h-screen bg-black overflow-hidden">
-        <LightningField />
         <main className="relative z-10 flex items-center justify-center min-h-screen px-4 pt-24">
           <Card className="w-full max-w-md glass-effect lightning-border">
             <CardContent className="p-8">
@@ -80,11 +78,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
-      <LightningField />
-      <main className="relative z-10">
-        <AdminDashboard />
-      </main>
-    </div>
+    <main className="relative z-10">
+      <AdminDashboard />
+    </main>
   );
 }

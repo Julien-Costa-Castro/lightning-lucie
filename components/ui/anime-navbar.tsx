@@ -46,13 +46,13 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
     <div className="fixed top-5 left-0 right-0 z-[9999]">
       <div className="flex justify-center pt-6">
         <motion.div 
-          className="flex items-center gap-3 bg-black/50 border border-white/10 backdrop-blur-lg py-2 px-2 rounded-full shadow-lg relative"
+          className="flex items-center gap-1 glass-effect border border-white/10 py-1 px-1 rounded-full shadow-xl chrome-effect"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{
             type: "spring",
-            stiffness: 260,
-            damping: 20,
+            stiffness: 300,
+            damping: 25,
           }}
         >
           {items.map((item) => {
@@ -72,55 +72,48 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
                 onMouseEnter={() => setHoveredTab(item.name)}
                 onMouseLeave={() => setHoveredTab(null)}
                 className={cn(
-                  "relative cursor-pointer text-sm font-semibold px-6 py-3 rounded-full transition-all duration-300",
-                  "text-white/70 hover:text-white",
-                  isActive && "text-white"
+                  "relative cursor-pointer text-sm font-medium px-5 py-2.5 rounded-full transition-all duration-300 reflect-effect",
+                  "text-white/80 hover:text-white",
+                  isActive ? "text-white font-semibold" : ""
                 )}
               >
                 {isActive && (
                   <motion.div
-                    className="absolute inset-0 rounded-full -z-10 overflow-hidden"
+                    className="absolute inset-0 rounded-full -z-10 overflow-hidden chrome-border"
                     initial={{ opacity: 0 }}
                     animate={{ 
-                      opacity: [0.3, 0.5, 0.3],
-                      scale: [1, 1.03, 1]
+                      opacity: [0.4, 0.6, 0.4],
+                      scale: [1, 1.02, 1]
                     }}
                     transition={{
-                      duration: 2,
+                      duration: 3,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
                   >
-                    <div className="absolute inset-0 bg-blue-500/25 rounded-full blur-md" />
-                    <div className="absolute inset-[-4px] bg-blue-500/20 rounded-full blur-xl" />
-                    <div className="absolute inset-[-8px] bg-blue-500/15 rounded-full blur-2xl" />
-                    <div className="absolute inset-[-12px] bg-blue-500/5 rounded-full blur-3xl" />
-                    
-                    <div 
-                      className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0"
-                      style={{
-                        animation: "shine 3s ease-in-out infinite"
-                      }}
-                    />
+                    <div className="absolute inset-0 bg-white/10 rounded-full" />
                   </motion.div>
                 )}
-
-                <motion.span
-                  className="hidden md:inline relative z-10"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {item.name}
-                </motion.span>
-                <motion.span 
-                  className="md:hidden relative z-10"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Icon size={18} strokeWidth={2.5} />
-                </motion.span>
-          
+                
+                <div className="flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  <motion.span
+                    className="hidden md:inline relative z-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {item.name}
+                  </motion.span>
+                  <motion.span 
+                    className="md:hidden relative z-10"
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Icon size={18} strokeWidth={2.5} />
+                  </motion.span>
+                </div>
+                
                 <AnimatePresence>
                   {isHovered && !isActive && (
                     <motion.div

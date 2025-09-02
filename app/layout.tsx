@@ -1,8 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { MainNavBar } from '@/components/ui/anime-navbar';
-import { Footer } from '@/components/Footer';
+import ClientLayout from './client-layout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,13 +22,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className="scroll-smooth">
-      <body className={`${inter.className} bg-gray-900 text-white min-h-screen flex flex-col`}>
-        <MainNavBar />
-        <main className="flex-grow pt-24 md:pt-28 pb-40 md:pb-48">
+    <html lang="fr" className="dark scroll-smooth h-full">
+      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
+        <ClientLayout>
           {children}
-        </main>
-        <Footer />
+        </ClientLayout>
       </body>
     </html>
   );

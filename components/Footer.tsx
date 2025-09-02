@@ -6,142 +6,137 @@ import Link from 'next/link';
 export function Footer() {
   return (
     <footer className="mt-auto w-full">
-      <style jsx global>{`
-        .footer-glass {
-          background: rgba(0, 0, 0, 0.3) !important;
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .footer-content {
-          padding: 2.5rem 1rem 1rem;
-          position: relative;
-        }
-        @supports not (backdrop-filter: none) {
-          .footer-glass {
-            background: rgba(0, 0, 0, 0.6) !important;
-          }
-        }
-      `}</style>
-      
-      <div className="footer-glass">
-        <div className="footer-content mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 md:flex-row md:items-start md:justify-between md:gap-12 text-white">
-        <div className="flex flex-col items-center md:items-start">
-          <Link href="/" className="mb-4 flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-700 text-2xl font-extrabold text-white shadow-md">
-              ⚡
-            </span>
-            <span className="bg-gradient-to-br from-blue-200 to-blue-500 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
-              Lightning Lucie
-            </span>
-          </Link>
-          <p className="text-white/80 mb-6 max-w-xs text-center text-sm md:text-left">
-            Création de contenus uniques et personnalisés. Photographie, vidéo et design pour mettre en lumière votre univers.
-          </p>
-          <div className="mt-2 flex gap-3 text-blue-400">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="hover:text-foreground transition"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="hover:text-foreground transition"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-              className="hover:text-foreground transition"
-            >
-              <Twitter className="h-5 w-5" />
-            </a>
-          </div>
-        </div>
-        
-        <nav className="flex w-full flex-col gap-9 text-center md:w-auto md:flex-row md:justify-end md:text-left">
-          <div>
-            <div className="mb-3 text-xs font-semibold tracking-widest text-blue-400 uppercase">
-              Navigation
+      <div className="glass-effect border-t border-white/10">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-10 md:flex-row md:items-start md:justify-between md:gap-12 text-white">
+          <div className="flex flex-col items-center md:items-start">
+            <Link href="/" className="mb-4 flex items-center gap-2 group">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-white/90 to-white/70 text-2xl font-extrabold text-gray-900 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                ⚡
+              </span>
+              <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-xl font-bold tracking-tight text-transparent">
+                Lightning Lucie
+              </span>
+            </Link>
+            <p className="text-white/80 mb-6 max-w-xs text-center text-sm md:text-left">
+              Création de contenus uniques et personnalisés. Photographie, vidéo et design pour mettre en lumière votre univers.
+            </p>
+            <div className="mt-2 flex gap-4">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-white/70 hover:text-white transition-all hover:scale-110"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-white/70 hover:text-white transition-all hover:scale-110"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="text-white/70 hover:text-white transition-all hover:scale-110"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
             </div>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-white/70 hover:text-white transition-colors">
-                  Accueil
-                </Link>
-              </li>
-              <li>
-                <Link href="/a-propos" className="text-white/70 hover:text-white transition-colors">
-                  À propos
-                </Link>
-              </li>
-              <li>
-                <Link href="/boutique" className="text-white/70 hover:text-white transition-colors">
-                  Boutique
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-white/70 hover:text-white transition-colors">
-                  Contact
+          </div>
+          
+          <nav className="flex w-full flex-col gap-9 text-center md:w-auto md:flex-row md:justify-end md:text-left">
+            <div>
+              <div className="mb-3 text-xs font-semibold tracking-widest text-white/80 uppercase">
+                Navigation
+              </div>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    Accueil
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/a-propos" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    À propos
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/boutique" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    Boutique
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <div className="mb-3 text-xs font-semibold tracking-widest text-white/80 uppercase">
+                Liens utiles
+              </div>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/mentions-legales" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    Mentions légales
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cgv" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    CGV
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/politique-de-confidentialite" className="text-white/60 hover:text-white transition-colors flex items-center group">
+                    <span className="w-1 h-1 bg-white/40 rounded-full mr-2 group-hover:bg-white transition-colors"></span>
+                    Confidentialité
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <div className="mb-3 text-xs font-semibold tracking-widest text-blue-400 uppercase">
-              Liens utiles
-            </div>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/mentions-legales" className="text-white/70 hover:text-white transition-colors">
-                  Mentions légales
-                </Link>
-              </li>
-              <li>
-                <Link href="/cgv" className="text-white/70 hover:text-white transition-colors">
-                  CGV
-                </Link>
-              </li>
-              <li>
-                <Link href="/politique-de-confidentialite" className="text-white/70 hover:text-white transition-colors">
-                  Confidentialité
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <div className="mb-3 text-xs font-semibold tracking-widest text-blue-400 uppercase">
+            <div className="mb-3 text-xs font-semibold tracking-widest text-white/80 uppercase">
               Contact
             </div>
-            <ul className="space-y-2">
-              <li className="flex items-center justify-center gap-2 md:justify-start">
-                <Mail className="h-4 w-4 text-blue-400" />
-                <a href="mailto:contact@lightning-lucie.com" className="text-white/70 hover:text-white transition-colors">
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2 group">
+                <div className="p-1.5 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <Mail className="h-3.5 w-3.5 text-white/70 group-hover:text-white transition-colors" />
+                </div>
+                <a href="mailto:contact@lightning-lucie.com" className="text-white/60 hover:text-white transition-colors text-sm">
                   contact@lightning-lucie.com
                 </a>
               </li>
-              <li className="flex items-center justify-center gap-2 md:justify-start">
-                <Phone className="h-4 w-4 text-blue-400" />
-                <a href="tel:+33123456789" className="text-white/70 hover:text-white transition-colors">
-                  +33 1 23 45 67 89
+              <li className="flex items-center gap-2 group">
+                <div className="p-1.5 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <Phone className="h-3.5 w-3.5 text-white/70 group-hover:text-white transition-colors" />
+                </div>
+                <a href="tel:+33612345678" className="text-white/60 hover:text-white transition-colors text-sm">
+                  +33 6 12 34 56 78
                 </a>
               </li>
-              <li className="flex items-center justify-center gap-2 md:justify-start">
-                <MapPin className="h-4 w-4 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span className="text-white/70">
-                  123 Rue de Paris, 75001 Paris, France
+              <li className="flex items-center gap-2 group">
+                <div className="p-1.5 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <MapPin className="h-3.5 w-3.5 text-white/70 group-hover:text-white transition-colors" />
+                </div>
+                <span className="text-white/60 text-sm">
+                  Paris, France
                 </span>
               </li>
             </ul>
@@ -149,8 +144,20 @@ export function Footer() {
         </nav>
         </div>
         
-        <div className="text-white/60 relative z-10 mt-6 text-center text-xs pb-4">
-          <span>&copy; {new Date().getFullYear()} Lightning Lucie. Tous droits réservés.</span>
+        <div className="border-t border-white/10 py-6">
+          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between px-6 md:flex-row">
+            <p className="text-center text-sm text-white/50 md:text-left">
+              &copy; {new Date().getFullYear()} Lightning Lucie. Tous droits réservés.
+            </p>
+            <div className="mt-4 flex gap-6 text-sm md:mt-0">
+              <Link href="/mentions-legales" className="text-white/50 hover:text-white transition-colors hover:underline">
+                Mentions légales
+              </Link>
+              <Link href="/politique-de-confidentialite" className="text-white/50 hover:text-white transition-colors hover:underline">
+                Politique de confidentialité
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
