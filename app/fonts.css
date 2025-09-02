@@ -1,0 +1,16 @@
+/* Utilisation exclusive de la variante Calculated */
+@font-face {
+  font-family: 'SpeechesAndCream';
+  src: url('/fonts/SpeechesAndCream-Calculated.otf') format('opentype');
+  font-weight: 400; /* Poids normal */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SpeechesAndCream';
+  src: url('/fonts/SpeechesAndCream-Calculated.otf') format('opentype');
+  font-weight: 600; /* Poids semi-gras */
+  font-style: normal;
+  font-display: swap;
+}

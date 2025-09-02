@@ -9,6 +9,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['SpeechesAndCream', 'sans-serif'],
+        speeches: ['SpeechesAndCream', 'sans-serif'],
+      },
+      fontWeight: {
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '600', // Forcé à utiliser la même graisse que semibold
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

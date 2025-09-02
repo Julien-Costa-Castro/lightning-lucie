@@ -1,9 +1,13 @@
 import './globals.css';
+import './fonts.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import ClientLayout from './client-layout';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter' 
+});
 
 export const metadata: Metadata = {
   title: 'Lightning Lucie - BD Sci-Fi 2601',
@@ -23,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark scroll-smooth h-full">
-      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
+      <body className={`${inter.variable} font-sans min-h-screen bg-background text-foreground`}>
         <ClientLayout>
           {children}
         </ClientLayout>
