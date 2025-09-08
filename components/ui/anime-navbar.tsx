@@ -142,14 +142,9 @@ export function MainNavBar() {
       icon: Home,
     },
     {
-      name: "Boutique",
+      name: "Shop",
       url: "/boutique",
       icon: BookOpen,
-    },
-    {
-      name: "À propos",
-      url: "/a-propos",
-      icon: Info,
     },
     {
       name: "Contact",

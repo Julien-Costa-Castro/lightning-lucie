@@ -149,27 +149,6 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Description with modern cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="glass-effect p-8 rounded-2xl chrome-effect group hover:chrome-glow transition-all duration-500 border border-white/10">
-            <div className="text-4xl mb-4">⚡</div>
-            <h3 className="text-xl font-bold text-white mb-3">Pouvoirs Électriques</h3>
-            <p className="text-white/70 leading-relaxed">
-              Découvrez les capacités extraordinaires de Lucie et ses combats 
-              spectaculaires dans les arènes de Kora.
-            </p>
-          </div>
-          
-          <div className="glass-effect p-8 rounded-2xl chrome-effect group hover:chrome-glow transition-all duration-500 border border-white/10">
-            <div className="text-4xl mb-4">🌌</div>
-            <h3 className="text-xl font-bold text-white mb-3">Univers Spatial</h3>
-            <p className="text-white/70 leading-relaxed">
-              Explorez le système Kora et ses six planètes habitables dans 
-              cette épopée futuriste captivante.
-            </p>
-          </div>
-        </div>
-
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link href="/boutique">
