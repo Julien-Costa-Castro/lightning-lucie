@@ -1,6 +1,6 @@
 'use client';
 
-import { Shop } from '@/components/Shop';
+import Shop from '@/components/Shop';
 
 export default function Boutique() {
   return (

@@ -11,7 +11,7 @@ import { PlanetaryOrbit } from './PlanetaryOrbit';
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 pt-32 pb-20">
+    <section className="relative min-h-[85vh] flex items-center justify-center px-4 pt-32 pb-40">
       {/* Hero Content */}
       <div className="max-w-6xl mx-auto text-center space-y-12">
         {/* Couverture BD avec effet 3D amélioré */}
@@ -91,7 +91,15 @@ export function Hero() {
               }}
             >
               <div className="space-y-2">
-                <div className="text-2xl font-bold">LIGHTNING LUCIE</div>
+                <div className="relative w-full h-16 -mt-4 -mb-2">
+                  <Image 
+                    src="/images/titre.png" 
+                    alt="Lightning Lucie" 
+                    fill 
+                    className="object-contain"
+                    sizes="(max-width: 768px) 80vw, 25vw"
+                  />
+                </div>
                 <div className="h-px bg-black/20 w-full"></div>
                 <div className="text-sm text-black/70">Tome 1</div>
                 <div className="text-sm text-black/60 mt-4">Une aventure électrisante dans l'univers de Kora</div>
@@ -138,11 +146,7 @@ export function Hero() {
           <div className="relative">
             <AnimatedTitle />
           </div>
-          <div className="flex items-center justify-center space-x-4">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-white/60"></div>
-            <Zap className="h-6 w-6 text-white/80" />
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-white/60"></div>
-          </div>
+          <div className="h-8"></div>
           <p className="text-xl md:text-2xl text-white/80 font-light max-w-3xl mx-auto leading-relaxed">
             En 2601, dans le système Kora, une héroïne aux pouvoirs électriques 
             affronte les arènes de combat interplanétaires
@@ -153,31 +157,37 @@ export function Hero() {
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link href="/boutique">
             <Button 
-              size="lg" 
-              className="relative overflow-hidden group chrome-effect hover:chrome-glow transition-all duration-300"
+              variant="outline"
+              size="lg"
+              className="border-white/20 text-white hover:bg-white/5 px-8 py-4 rounded-xl group chrome-border hover:chrome-glow transition-all duration-300"
             >
-              <span className="relative z-10 flex items-center text-lg font-medium">
+              <span className="flex items-center text-lg">
                 Acheter maintenant
                 <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-white/90 to-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></span>
             </Button>
           </Link>
           
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="border-white/20 text-white hover:bg-white/5 px-8 py-4 rounded-xl group chrome-border hover:chrome-glow transition-all duration-300"
+          <a 
+            href="https://youtu.be/T2vUjtPyLiY" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center"
           >
-            <Play className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
-            <span className="text-lg">Bande-annonce</span>
-          </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="border-white/20 text-white hover:bg-white/5 px-8 py-4 rounded-xl group chrome-border hover:chrome-glow transition-all duration-300"
+            >
+              <Play className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
+              <span className="text-lg">Bande-annonce</span>
+            </Button>
+          </a>
         </div>
 
         {/* Système Planétaire */}
         <div className="mt-32 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">Lightning Lucie</h2>
             <p className="text-xl text-white/80">Aperçu de l'univers électrisant</p>
           </div>
           <div className="mx-auto w-full max-w-4xl h-[500px] relative">

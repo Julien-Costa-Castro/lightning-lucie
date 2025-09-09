@@ -195,7 +195,7 @@ export function PlanetaryOrbit() {
         })}
 
         {/* Légende */}
-        <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 text-xs text-gray-400 text-center mt-4">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-xs text-gray-400 text-center">
           Survolez les planètes pour en savoir plus
         </div>
       </div>

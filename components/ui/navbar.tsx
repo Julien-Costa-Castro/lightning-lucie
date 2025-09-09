@@ -8,10 +8,13 @@ import { cn } from "@/lib/utils"
 import { Button } from "./button"
 import { Menu, X, ShoppingCart } from "lucide-react"
 import { SparklesCore } from "./sparkles"
+import { useCart } from '@/hooks/useCart';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
+  const { items } = useCart()
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0)
 
   const navItems = [
     { name: 'Accueil', href: '/' },
@@ -89,6 +92,17 @@ export function Navbar() {
 
         {/* Mobile Menu Button */}
         <div className="flex items-center space-x-4 md:hidden">
+          <Link href="/panier" className="relative mr-2">
+            <Button variant="ghost" size="icon" className="text-gray-300 hover:bg-blue-500/10 hover:text-white">
+              <ShoppingCart className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+              <span className="sr-only">Panier</span>
+            </Button>
+          </Link>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? (
               <X className="h-5 w-5 text-white" />
@@ -101,10 +115,17 @@ export function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center space-x-4 md:flex">
-          <Button variant="ghost" size="icon" className="text-gray-300 hover:bg-blue-500/10 hover:text-white">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Panier</span>
-          </Button>
+          <Link href="/panier" className="relative">
+            <Button variant="ghost" size="icon" className="text-gray-300 hover:bg-blue-500/10 hover:text-white">
+              <ShoppingCart className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+              <span className="sr-only">Panier</span>
+            </Button>
+          </Link>
           <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
             Se connecter
           </Button>

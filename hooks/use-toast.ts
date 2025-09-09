@@ -139,15 +139,23 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, 'id'>;
 
-function toast({ ...props }: Toast) {
-  const id = genId();
+export function toast({ ...props }: Toast) {
+  const id = genId()
+  
+  console.log('toast() appelé avec les props:', { ...props, id });
 
-  const update = (props: ToasterToast) =>
-    dispatch({
+  const update = (props: ToasterToast) => {
+    console.log('toast.update() appelé avec:', props);
+    return dispatch({
       type: 'UPDATE_TOAST',
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: 'DISMISS_TOAST', toastId: id });
+  }
+  
+  const dismiss = () => {
+    console.log('toast.dismiss() appelé pour le toast:', id);
+    return dispatch({ type: 'DISMISS_TOAST', toastId: id });
+  }
 
   dispatch({
     type: 'ADD_TOAST',
@@ -156,10 +164,11 @@ function toast({ ...props }: Toast) {
       id,
       open: true,
       onOpenChange: (open) => {
-        if (!open) dismiss();
+        console.log('onOpenChange:', open, 'pour le toast:', id);
+        if (!open) dismiss()
       },
     },
-  });
+  })
 
   return {
     id: id,
@@ -168,17 +177,26 @@ function toast({ ...props }: Toast) {
   };
 }
 
-function useToast() {
+export function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
+    console.log('useToast - Ajout du listener');
     listeners.push(setState);
+    
+    console.log('useToast - État initial:', memoryState);
+    
     return () => {
+      console.log('useToast - Suppression du listener');
       const index = listeners.indexOf(setState);
       if (index > -1) {
         listeners.splice(index, 1);
       }
     };
+  }, []);
+  
+  React.useEffect(() => {
+    console.log('useToast - État mis à jour:', state);
   }, [state]);
 
   return {
@@ -187,5 +205,3 @@ function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
   };
 }
-
-export { useToast, toast };
