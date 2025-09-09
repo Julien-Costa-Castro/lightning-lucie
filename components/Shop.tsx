@@ -68,7 +68,7 @@ export default function Shop() {
                 </h3>
                 <div className="flex justify-between items-center w-full max-w-[250px]">
                   <div className="bg-white rounded-full px-4 h-[2.3rem] flex items-center">
-                    <span className="text-xl font-black text-black" style={{ fontFamily: '"SpeechesAndCream-Choked", sans-serif' }}>
+                    <span className="text-xl font-bold text-black font-sans" style={{ fontFamily: 'Arial, sans-serif' }}>
                       {product.price}€
                     </span>
                   </div>
@@ -77,7 +77,7 @@ export default function Shop() {
                       e.preventDefault();
                       addToCart(product);
                     }}
-                    className="bg-white hover:bg-gray-100 text-black font-bold px-4 rounded-full border-2 border-white transition-colors whitespace-nowrap h-[2.3rem] flex items-center"
+                    className="bg-white hover:bg-gray-100 text-black font-sans font-bold px-4 rounded-full border-2 border-white transition-colors whitespace-nowrap h-[2.3rem] flex items-center" style={{ fontFamily: 'Arial, sans-serif' }}
                   >
                     Ajouter
                   </button>

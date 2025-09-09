@@ -1,15 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Trash2, Plus, Minus, CreditCard, Zap } from 'lucide-react';
+import { Trash2, Plus, Minus, CreditCard } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+import Image from 'next/image';
 
 export function Cart() {
   const { items, updateQuantity, removeFromCart, getTotal } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCharacter, setShowCharacter] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [characterPosition, setCharacterPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    // Simuler un temps de chargement
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-white text-lg">Chargement de votre panier...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
@@ -22,27 +47,28 @@ export function Cart() {
 
   if (items.length === 0) {
     return (
-      <section className="py-32 px-4">
+      <section className="pt-8 pb-32 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center space-x-3 mb-8">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-400"></div>
-            <Zap className="h-6 w-6 text-blue-400" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-blue-400"></div>
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/images/panier.png" 
+              alt="Panier" 
+              className="h-64 w-auto -mt-16"
+            />
           </div>
-          <h1 className="text-5xl md:text-6xl font-black mb-12 text-white">
-            Panier
-          </h1>
-          <Card className="glass-effect lightning-border hover:lightning-glow transition-all duration-500">
-            <CardContent className="p-16">
+          <Card className="glass-effect lightning-border hover:lightning-glow transition-all duration-500 max-w-md mx-auto">
+            <CardContent className="p-8 md:p-12 text-center" style={{ fontFamily: 'Arial, sans-serif' }}>
               <div className="text-8xl mb-6">🛒</div>
               <h2 className="text-2xl font-bold text-white mb-4">Votre panier est vide</h2>
               <p className="text-gray-400 mb-8 text-lg">Découvrez nos produits Lightning Lucie</p>
-              <Button 
-                asChild
-                className="electric-gradient text-white font-semibold px-8 py-4 rounded-xl lightning-border hover:lightning-glow transition-all duration-300"
-              >
-                <a href="/boutique">Continuer vos achats</a>
-              </Button>
+              <div className="flex justify-center">
+                <Button 
+                  asChild
+                  className="w-64 bg-white/10 hover:bg-white/20 text-white font-medium py-4 text-base rounded-lg border border-white/20 hover:border-white/30 transition-all duration-200 relative"
+                >
+                  <a href="/boutique">Continuer vos achats</a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -51,17 +77,16 @@ export function Cart() {
   }
 
   return (
-    <section className="py-32 px-4">
+    <section className="pt-8 pb-32 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <div className="inline-flex items-center space-x-3 mb-6">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-400"></div>
-            <Zap className="h-6 w-6 text-blue-400" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-blue-400"></div>
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/images/panier.png" 
+              alt="Votre Panier" 
+              className="h-64 w-auto -mt-16"
+            />
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white">
-            Votre Panier
-          </h1>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-12">
@@ -72,13 +97,15 @@ export function Cart() {
                 <CardContent className="p-8">
                   <div className="flex items-center space-x-6">
                     <div className="w-24 h-24 electric-gradient rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-3xl">⚡</span>
+                      <p className="text-sm text-gray-500" style={{ fontFamily: 'Arial, sans-serif' }}>
+                        {item.isLimited ? 'Stock limité' : 'En stock'}
+                      </p>
                     </div>
                     
                     <div className="flex-1">
-                      <h3 className="font-bold text-xl text-white group-hover:text-blue-300 transition-colors">{item.name}</h3>
-                      <p className="text-gray-400 mt-1">{item.category}</p>
-                      <p className="text-blue-400 font-black text-lg mt-2">{item.price}€</p>
+                      <h3 className="font-bold text-xl text-white group-hover:text-blue-300 transition-colors" style={{ fontFamily: 'inherit' }}>{item.name}</h3>
+                      <p className="text-gray-400 mt-1" style={{ fontFamily: 'Arial, sans-serif' }}>{item.category}</p>
+                      <p className="text-blue-400 font-black text-lg mt-2" style={{ fontFamily: 'Arial, sans-serif' }}>{item.price}€</p>
                     </div>
                     
                     <div className="flex items-center space-x-3">
@@ -96,6 +123,7 @@ export function Cart() {
                         value={item.quantity}
                         onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
                         className="w-20 text-center glass-effect border-white/20 text-white rounded-xl"
+                        style={{ fontFamily: 'Arial, sans-serif' }}
                       />
                       
                       <Button
@@ -126,37 +154,40 @@ export function Cart() {
           <div>
             <Card className="glass-effect lightning-border hover:lightning-glow transition-all duration-500 sticky top-8">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-black text-white mb-8">Résumé</h3>
+                <h3 className="text-2xl font-black text-white mb-8" style={{ fontFamily: 'Arial, sans-serif' }}>Résumé</h3>
                 
                 <div className="space-y-6 mb-8">
                   <div className="flex justify-between text-gray-300 text-lg">
-                    <span>Sous-total</span>
-                    <span className="font-semibold">{getTotal().toFixed(2)}€</span>
+                    <span style={{ fontFamily: 'Arial, sans-serif' }}>Sous-total</span>
+                    <span className="font-semibold" style={{ fontFamily: 'Arial, sans-serif' }}>{getTotal().toFixed(2)}€</span>
                   </div>
                   <div className="flex justify-between text-gray-300 text-lg">
-                    <span>Livraison</span>
-                    <span className="font-semibold text-green-400">Gratuite</span>
+                    <span style={{ fontFamily: 'Arial, sans-serif' }}>Livraison</span>
+                    <span className="font-semibold text-green-400" style={{ fontFamily: 'Arial, sans-serif' }}>Gratuite</span>
                   </div>
                   <div className="border-t border-white/10 pt-6">
                     <div className="flex justify-between font-black text-white text-2xl">
-                      <span>Total</span>
-                      <span className="text-blue-400">{getTotal().toFixed(2)}€</span>
+                      <span style={{ fontFamily: 'Arial, sans-serif' }}>Total</span>
+                      <span className="text-blue-400" style={{ fontFamily: 'Arial, sans-serif' }}>{getTotal().toFixed(2)}€</span>
                     </div>
                   </div>
                 </div>
                 
-                <Button
-                  onClick={handleCheckout}
-                  disabled={isCheckingOut}
-                  className="w-full electric-gradient text-white font-semibold py-4 rounded-xl group lightning-border hover:lightning-glow transition-all duration-300"
-                >
-                  <CreditCard className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform" />
-                  <span className="text-lg">
-                    {isCheckingOut ? 'Traitement...' : 'Procéder au paiement'}
-                  </span>
-                </Button>
+                <div className="w-full">
+                  <Button
+                    ref={buttonRef}
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
+                    className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-4 text-base rounded-lg border border-white/20 hover:border-white/30 transition-all duration-200 relative z-10"
+                  >
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    <span className="tracking-normal" style={{ fontFamily: 'Arial, sans-serif' }}>
+                      {isCheckingOut ? 'Traitement...' : 'Procéder au paiement'}
+                    </span>
+                  </Button>
+                </div>
                 
-                <p className="text-xs text-gray-500 text-center mt-4">
+                <p className="text-xs text-gray-500 text-center mt-4" style={{ fontFamily: 'Arial, sans-serif' }}>
                   Paiement sécurisé par Stripe
                 </p>
               </CardContent>

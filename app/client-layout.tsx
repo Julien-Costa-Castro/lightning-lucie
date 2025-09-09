@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { MainNavBar } from '@/components/ui/anime-navbar';
-import { Footer } from '@/components/Footer';
+import Footer from '@/components/Footer';
 import { Squares } from '@/components/ui/squares-background';
 import { Toaster } from '@/components/ui/toaster';
 

@@ -37,12 +37,12 @@ export function Hero() {
             }}
             transition={{
               rotateY: {
-                duration: 15,
+                duration: 30,
                 repeat: Infinity,
                 ease: "linear"
               },
               boxShadow: {
-                duration: 15,
+                duration: 30,
                 repeat: Infinity,
                 ease: "easeInOut"
               }
@@ -74,37 +74,26 @@ export function Hero() {
             
             {/* Face arrière */}
             <motion.div 
-              className="absolute w-full h-full backface-hidden"
+              className="absolute w-full h-full backface-hidden overflow-hidden"
               style={{
-                background: 'white',
                 borderRadius: '0.5rem',
                 transform: 'rotateY(180deg) translateZ(25px)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'black',
-                fontSize: '1.25rem',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                padding: '1.5rem',
                 boxShadow: '0 15px 35px -5px rgba(0, 0, 0, 0.5)',
               }}
             >
-              <div className="space-y-2">
-                <div className="relative w-full h-16 -mt-4 -mb-2">
-                  <Image 
-                    src="/images/titre.png" 
-                    alt="Lightning Lucie" 
-                    fill 
-                    className="object-contain"
-                    sizes="(max-width: 768px) 80vw, 25vw"
-                  />
-                </div>
-                <div className="h-px bg-black/20 w-full"></div>
-                <div className="text-sm text-black/70">Tome 1</div>
-                <div className="text-sm text-black/60 mt-4">Une aventure électrisante dans l'univers de Kora</div>
+              <div className="relative w-full h-full">
+                <Image 
+                  src="/images/Couverture-arriere-BD.png" 
+                  alt="Dos de la BD Lightning Lucie" 
+                  fill 
+                  className="object-cover object-center"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  style={{
+                    objectPosition: 'center',
+                  }}
+                  priority
+                />
               </div>
-              <div className="absolute inset-0 border border-black/10 rounded-lg" />
             </motion.div>
             
             {/* Tranche du livre */}

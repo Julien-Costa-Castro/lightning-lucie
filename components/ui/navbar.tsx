@@ -18,8 +18,8 @@ export function Navbar() {
 
   const navItems = [
     { name: 'Accueil', href: '/' },
+    { name: 'Lucie', href: '/lucie' },
     { name: 'Shop', href: '/boutique' },
-    { name: 'Contact', href: '/contact' },
   ]
 
   return (
@@ -54,7 +54,7 @@ export function Navbar() {
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
           </div>
-          <span className="text-xl font-bold text-white">Lightning Lucie</span>
+          <span className="text-xl font-bold text-white" style={{ fontFamily: 'Arial, sans-serif' }}>Lightning Lucie</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -66,9 +66,10 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "relative px-2 py-1 text-sm font-medium text-gray-300 transition-colors hover:text-white",
-                  isActive && "text-white"
+                  `relative px-2 py-1 text-sm font-medium text-gray-300 transition-colors hover:text-white ${isActive ? 'text-white' : ''}`,
+                  { style: { fontFamily: 'Arial, sans-serif' } }
                 )}
+                style={{ fontFamily: 'Arial, sans-serif' }}
               >
                 {isActive && (
                   <motion.span
@@ -126,7 +127,10 @@ export function Navbar() {
               <span className="sr-only">Panier</span>
             </Button>
           </Link>
-          <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+          <Button 
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+            style={{ fontFamily: 'Arial, sans-serif' }}
+          >
             Se connecter
           </Button>
         </div>
@@ -150,13 +154,17 @@ export function Navbar() {
                     ? 'bg-blue-500/10 text-white'
                     : 'text-gray-300 hover:bg-white/5 hover:text-white'
                 }`}
+                style={{ fontFamily: 'Arial, sans-serif' }}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
             <div className="border-t border-white/10 pt-2">
-              <Button className="w-full justify-start bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+              <Button 
+                className="w-full justify-start bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                style={{ fontFamily: 'Arial, sans-serif' }}
+              >
                 Se connecter
               </Button>
             </div>

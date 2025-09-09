@@ -76,6 +76,7 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
                   "text-white/80 hover:text-white",
                   isActive ? "text-white font-semibold" : ""
                 )}
+                style={{ fontFamily: 'Arial, sans-serif' }}
               >
                 {isActive && (
                   <motion.div
@@ -145,11 +146,6 @@ export function MainNavBar() {
       name: "Shop",
       url: "/boutique",
       icon: BookOpen,
-    },
-    {
-      name: "Contact",
-      url: "/contact",
-      icon: Mail,
     },
     {
       name: "Panier",
