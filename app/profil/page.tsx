@@ -52,7 +52,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 font-['Arial']">
+    <div className="container mx-auto px-4 pt-28 pb-12 font-['Arial']">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* En-tête du profil */}
         <div className="space-y-2">

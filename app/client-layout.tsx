@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { Squares } from '@/components/ui/squares-background';
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/providers/AuthProvider';
+import { NotificationProvider } from '@/components/NotificationProvider';
 
 export default function ClientLayout({
   children,
@@ -32,21 +33,17 @@ export default function ClientLayout({
 
   return (
     <AuthProvider>
-      <Squares 
-        direction="diagonal"
-        speed={0.5}
-        squareSize={40}
-        borderColor="#333" 
-        hoverFillColor="#1a1a1a"
-      />
-      <div className="relative z-10 flex flex-col min-h-screen bg-transparent">
-        <MainNavBar />
-        <main className="flex-grow pt-24 md:pt-28">
-          {children}
-        </main>
-        <Footer />
-      </div>
-      <Toaster />
+      <NotificationProvider>
+        <div className="min-h-screen flex flex-col">
+          <Squares />
+          <MainNavBar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
+        </div>
+      </NotificationProvider>
     </AuthProvider>
   );
 }

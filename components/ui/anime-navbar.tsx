@@ -153,7 +153,7 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
 }
 
 // Import du composant AuthModal
-import { AuthModal } from '@/components/auth/AuthModal';
+import { AuthModal } from '../auth/AuthModal';
 
 // Component to use in the app
 export function MainNavBar() {
