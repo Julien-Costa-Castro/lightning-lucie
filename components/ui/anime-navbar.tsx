@@ -4,13 +4,27 @@ import React, { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LucideIcon, Home, BookOpen, Info, Mail, ShoppingCart } from "lucide-react"
+import { 
+  LucideIcon, 
+  Home, 
+  BookOpen, 
+  Info, 
+  Mail, 
+  ShoppingCart, 
+  User, 
+  LogIn, 
+  LogOut,
+  UserPlus
+} from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/contexts/AuthContext"
+import { Button } from "./button"
 
 interface NavItem {
   name: string
   url: string
   icon: LucideIcon
+  onClick?: () => void
 }
 
 interface NavBarProps {
@@ -44,7 +58,7 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
 
   return (
     <div className="fixed top-5 left-0 right-0 z-[9999]">
-      <div className="flex justify-center pt-6">
+      <div className="flex justify-center pt-4 pb-2">
         <motion.div 
           className="flex items-center gap-1 glass-effect border border-white/10 py-1 px-1 rounded-full shadow-xl chrome-effect"
           initial={{ y: -20, opacity: 0 }}
@@ -67,7 +81,11 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
                 onClick={(e) => {
                   e.preventDefault()
                   setActiveTab(item.name)
-                  window.location.href = item.url
+                  if (item.onClick) {
+                    item.onClick()
+                  } else {
+                    window.location.href = item.url
+                  }
                 }}
                 onMouseEnter={() => setHoveredTab(item.name)}
                 onMouseLeave={() => setHoveredTab(null)}
@@ -97,7 +115,7 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
                 )}
                 
                 <div className="flex items-center gap-2">
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 flex-shrink-0" />
                   <motion.span
                     className="hidden md:inline relative z-10"
                     initial={{ opacity: 0 }}
@@ -134,8 +152,27 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
   )
 }
 
+// Import du composant AuthModal
+import { AuthModal } from '@/components/auth/AuthModal';
+
 // Component to use in the app
 export function MainNavBar() {
+  const { user, logout } = useAuth()
+  const [isClient, setIsClient] = useState(false)
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error)
+    }
+  }
+
   const navItems = [
     {
       name: "Accueil",
@@ -152,7 +189,36 @@ export function MainNavBar() {
       url: "/panier",
       icon: ShoppingCart,
     },
+    ...(user ? [
+      {
+        name: "Profil",
+        url: "/profil",
+        icon: User,
+      },
+      {
+        name: "Déconnexion",
+        url: "#",
+        icon: LogOut,
+        onClick: handleLogout
+      }
+    ] : [
+      {
+        name: "Connexion",
+        url: "#",
+        icon: LogIn,
+        onClick: () => setIsAuthModalOpen(true)
+      }
+    ])
   ]
 
-  return <AnimeNavBar items={navItems} defaultActive="Accueil" />
+  if (!isClient) {
+    return null
+  }
+
+  return (
+    <>
+      <AnimeNavBar items={navItems} defaultActive="Accueil" />
+      <AuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+    </>
+  )
 }

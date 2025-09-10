@@ -5,6 +5,7 @@ import { MainNavBar } from '@/components/ui/anime-navbar';
 import Footer from '@/components/Footer';
 import { Squares } from '@/components/ui/squares-background';
 import { Toaster } from '@/components/ui/toaster';
+import AuthProvider from '@/providers/AuthProvider';
 
 export default function ClientLayout({
   children,
@@ -30,7 +31,7 @@ export default function ClientLayout({
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <Squares 
         direction="diagonal"
         speed={0.5}
@@ -46,6 +47,6 @@ export default function ClientLayout({
         <Footer />
       </div>
       <Toaster />
-    </>
+    </AuthProvider>
   );
 }
