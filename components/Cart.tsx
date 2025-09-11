@@ -1,20 +1,23 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Trash2, Plus, Minus, CreditCard } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+import { AuthModal } from '@/components/auth/AuthModal';
+import { CheckoutProcess } from './checkout/CheckoutProcess';
 import Image from 'next/image';
 
 export function Cart() {
   const { items, updateQuantity, removeFromCart, getTotal } = useCart();
+  const { user } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showCharacter, setShowCharacter] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [characterPosition, setCharacterPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Simuler un temps de chargement
@@ -24,6 +27,15 @@ export function Cart() {
     
     return () => clearTimeout(timer);
   }, []);
+
+  const handleCheckout = useCallback(() => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+    
+    setIsCheckingOut(true);
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -36,14 +48,32 @@ export function Cart() {
     );
   }
 
-  const handleCheckout = () => {
-    setIsCheckingOut(true);
-    // Ici vous intégreriez Stripe
-    setTimeout(() => {
-      alert('Redirection vers le paiement sécurisé...');
-      setIsCheckingOut(false);
-    }, 2000);
-  };
+  if (isCheckingOut) {
+    return (
+      <div className="py-12 px-4 max-w-4xl mx-auto">
+        <Button 
+          variant="ghost" 
+          onClick={() => setIsCheckingOut(false)}
+          className="mb-6"
+        >
+          ← Retour au panier
+        </Button>
+        <CheckoutProcess 
+          items={items.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+          }))}
+          onSuccess={() => {
+            // Rediriger vers la page de confirmation
+            window.location.href = '/commande-confirmee';
+          }}
+          onCancel={() => setIsCheckingOut(false)}
+        />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -195,6 +225,12 @@ export function Cart() {
           </div>
         </div>
       </div>
+      
+      {/* Modal d'authentification */}
+      <AuthModal 
+        open={showAuthModal} 
+        onOpenChange={setShowAuthModal} 
+      />
     </section>
   );
 }
