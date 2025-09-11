@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Package } from 'lucide-react';
 import { MondialRelayWidget } from './MondialRelayWidget';
+import { PaymentForm } from './PaymentForm';
 
 // Configurez votre clé publique Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -66,20 +67,19 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
       distance: 0 // Valeur par défaut
     };
     setSelectedPoint(relayPoint);
-    setShowRelaySelector(false); // Fermer le sélecteur après la sélection
-    setWidgetError(null);
-  };
-
-  const handleWidgetError = (error: string) => {
-    console.error('Erreur du widget:', error);
-    setWidgetError('Erreur lors du chargement du sélecteur de point relais. Veuillez réessayer.');
-    setIsWidgetLoading(false);
+    setShowRelaySelector(false);
   };
 
   const handleWidgetReady = () => {
     console.log('Widget Mondial Relay prêt');
     setIsWidgetLoading(false);
     setWidgetError(null);
+  };
+
+  const handleWidgetError = (error: string) => {
+    console.error('Erreur du widget Mondial Relay:', error);
+    setWidgetError(error);
+    setIsWidgetLoading(false);
   };
 
   const handlePayment = async () => {
@@ -92,7 +92,7 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
     setWidgetError(null);
     
     try {
-      // Créer une session de paiement côté serveur
+      // Créer une intention de paiement côté serveur
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
@@ -104,28 +104,54 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
         }),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Erreur lors de la création de la session de paiement');
+        throw new Error(data.error || 'Erreur lors de la création de la session de paiement');
       }
 
-      const { clientSecret } = await response.json();
+      const { clientSecret } = data;
+      
+      if (!clientSecret) {
+        throw new Error('Impossible de récupérer le client secret');
+      }
+      
       setClientSecret(clientSecret);
+      
     } catch (error) {
       console.error('Erreur lors du paiement:', error);
-      setWidgetError(error instanceof Error ? error.message : 'Une erreur est survenue lors de la préparation du paiement');
+      setWidgetError(
+        error instanceof Error 
+          ? error.message 
+          : 'Une erreur est survenue lors de la préparation du paiement'
+      );
       setIsLoading(false);
     }
   };
 
   if (clientSecret) {
     return (
-      <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold mb-4">Paiement sécurisé</h2>
-          <p>Redirection vers le processus de paiement sécurisé...</p>
-          <div className="mt-4">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-          </div>
+      <Elements 
+        stripe={stripePromise} 
+        options={{
+          clientSecret,
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#000000',
+              colorBackground: '#ffffff',
+              colorText: '#000000',
+              fontFamily: 'system-ui, sans-serif',
+            },
+          },
+        }}
+      >
+        <div className="max-w-2xl mx-auto p-6">
+          <h2 className="text-2xl font-bold mb-6">Paiement sécurisé</h2>
+          <PaymentForm 
+            onSuccess={() => onSuccess()} 
+            onError={(message) => setWidgetError(message)} 
+          />
         </div>
       </Elements>
     );
@@ -149,9 +175,9 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
             </div>
           ))}
           <div className="border-t pt-4 mt-4">
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total</span>
-              <span>{calculateTotal().toFixed(2)} €</span>
+            <div className="flex justify-between font-bold">
+              <p>Total</p>
+              <p>{calculateTotal().toFixed(2)} €</p>
             </div>
           </div>
         </div>
@@ -160,36 +186,32 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
   );
 
   // Rendu du sélecteur de point relais
-  const renderRelaySelector = () => (
-    <Card>
+  const renderRelayPointSelector = () => (
+    <Card className="mt-6">
       <CardHeader>
-        <CardTitle>Point relais</CardTitle>
+        <CardTitle>Point de retrait</CardTitle>
       </CardHeader>
       <CardContent>
         {selectedPoint ? (
-          <div className="border rounded-lg p-4">
-            <h3 className="font-bold">{selectedPoint.name}</h3>
-            <p>{selectedPoint.address}</p>
-            <p>{selectedPoint.zipCode} {selectedPoint.city}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              {selectedPoint.distance ? `À ${selectedPoint.distance} km` : ''}
+          <div className="space-y-2">
+            <p className="font-medium">{selectedPoint.name}</p>
+            <p className="text-sm">{selectedPoint.address}</p>
+            <p className="text-sm">
+              {selectedPoint.zipCode} {selectedPoint.city}
             </p>
-            <Button 
-              onClick={() => setShowRelaySelector(true)}
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mt-2 w-full"
-              type="button"
+              onClick={() => setShowRelaySelector(true)}
             >
-              <Package className="mr-2 h-4 w-4" />
               Changer de point relais
             </Button>
           </div>
         ) : (
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full"
             onClick={() => setShowRelaySelector(true)}
-            type="button"
           >
             <Package className="mr-2 h-4 w-4" />
             Choisir un point relais
@@ -197,6 +219,32 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
         )}
       </CardContent>
     </Card>
+  );
+
+  // Rendu du modal de sélection du point relais
+  const renderRelayPointModal = () => (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div className="p-4 border-b flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Sélectionnez un point relais</h3>
+          <button
+            onClick={() => setShowRelaySelector(false)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <span className="text-2xl">&times;</span>
+          </button>
+        </div>
+        <div className="flex-1 overflow-auto">
+          <MondialRelayWidget
+            onSelect={handleRelayPointSelect}
+            onReady={handleWidgetReady}
+            onError={handleWidgetError}
+            defaultPostalCode={postalCode}
+            isVisible={showRelaySelector}
+          />
+        </div>
+      </div>
+    </div>
   );
 
   // Rendu des boutons d'action
@@ -219,84 +267,38 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
     </div>
   );
 
-  // Rendu du modal de sélection de point relais
-  const renderRelayPointModal = () => (
-    showRelaySelector && (
-      <div className="fixed inset-0 bg-black/95 flex items-start pt-32 justify-center z-50 p-4">
-        <div className="w-full max-w-4xl bg-black rounded-lg overflow-hidden flex flex-col border border-gray-800 shadow-2xl" style={{ height: '75vh' }}>
-          <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-black">
-            <h3 className="text-lg font-medium text-white">Sélectionnez un point relais</h3>
-            <button 
-              onClick={() => setShowRelaySelector(false)}
-              className="text-gray-400 hover:text-white text-xl transition-colors"
-              aria-label="Fermer"
-            >
-              ✕
-            </button>
-          </div>
-          
-          <div className="flex-1 relative bg-black">
-            {isWidgetLoading && (
-              <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
-                <Loader2 className="h-8 w-8 animate-spin text-white" />
-              </div>
-            )}
-            {widgetError && (
-              <div className="m-4 p-4 bg-red-900/70 text-red-200 rounded-md border border-red-700">
-                {widgetError}
-              </div>
-            )}
-            <div className="h-full text-black">
-              <MondialRelayWidget 
-                onSelect={handleRelayPointSelect}
-                onError={handleWidgetError}
-                onReady={handleWidgetReady}
-                defaultPostalCode={postalCode}
-                isVisible={showRelaySelector}
-              />
-            </div>
-          </div>
-          
-          <div className="p-4 border-t border-gray-800 bg-black flex justify-end">
-            <Button 
-              onClick={() => setShowRelaySelector(false)}
-              disabled={!selectedPoint}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
-                selectedPoint 
-                  ? 'bg-green-600 hover:bg-green-700 text-white' 
-                  : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Valider ce point relais
-            </Button>
-          </div>
+  // Rendu du contenu principal
+  return (
+    <div className="max-w-4xl mx-auto p-4 space-y-6">
+      <h1 className="text-2xl font-bold">Finaliser la commande</h1>
+      
+      {widgetError && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{widgetError}</span>
+        </div>
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          {renderOrderSummary()}
+          {renderRelayPointSelector()}
+        </div>
+        <div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Paiement</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                Vous serez redirigé vers une page de paiement sécurisé pour finaliser votre commande.
+              </p>
+              {renderActionButtons()}
+            </CardContent>
+          </Card>
         </div>
       </div>
-    )
-  );
 
-  // Rendu du contenu principal
-  if (clientSecret) {
-    return (
-      <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <div className="text-center p-8">
-          <h2 className="text-2xl font-bold mb-4">Paiement sécurisé</h2>
-          <p>Redirection vers le processus de paiement sécurisé...</p>
-          <div className="mt-4">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-          </div>
-        </div>
-      </Elements>
-    );
-  }
-
-  // Rendu par défaut
-  return (
-    <div className="space-y-6 font-['Arial']">
-      {renderOrderSummary()}
-      {renderRelaySelector()}
-      {renderActionButtons()}
-      {renderRelayPointModal()}
+      {showRelaySelector && renderRelayPointModal()}
     </div>
   );
-}
+};
