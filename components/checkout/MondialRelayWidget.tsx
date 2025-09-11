@@ -226,6 +226,68 @@ export function MondialRelayWidget({
     };
   }, []);
 
+  // Ajout d'un style global pour cacher le message d'avertissement
+  useEffect(() => {
+    const hideWarning = () => {
+      // Sélecteurs CSS valides
+      const validSelectors = [
+        '.MR-Warning',
+        'div[style*="background-color: #FFF9C4"]',
+        'div[style*="background-color:#FFF9C4"]',
+        'div[style*="FFF9C4"]'
+      ];
+
+      // Appliquer le style à tous les éléments correspondants
+      validSelectors.forEach(selector => {
+        try {
+          document.querySelectorAll(selector).forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.display = 'none';
+              el.style.visibility = 'hidden';
+              el.style.height = '0';
+              el.style.padding = '0';
+              el.style.margin = '0';
+              el.style.overflow = 'hidden';
+            }
+          });
+        } catch (e) {
+          console.warn('Erreur avec le sélecteur:', selector, e);
+        }
+      });
+
+      // Recherche par texte alternatif
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT
+      );
+
+      let node;
+      while (node = walker.nextNode()) {
+        if (node.nodeValue && node.nodeValue.includes('Demonstration Account')) {
+          const parent = node.parentElement;
+          if (parent) {
+            parent.style.display = 'none';
+            parent.style.visibility = 'hidden';
+          }
+        }
+      }
+    };
+
+    // Exécuter immédiatement
+    hideWarning();
+    
+    // Configurer un MutationObserver pour attraper les éléments ajoutés dynamiquement
+    const observer = new MutationObserver(hideWarning);
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true 
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div 
       id={widgetContainerId.current}
