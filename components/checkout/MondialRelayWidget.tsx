@@ -43,44 +43,45 @@ export function MondialRelayWidget({
   const targetInputId = useRef(`mondial-relay-target-${Math.random().toString(36).substr(2, 9)}`);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<RelayPoint | null>(null);
   const retryCount = useRef(0);
 
-  const loadScript = useCallback((src: string, isAsync = false): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
+  const loadScript = useCallback((src: string, isAsync = true): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
       const existing = document.querySelector(`script[src="${src}"]`);
       if (existing) {
-        resolve(true);
+        resolve();
         return;
       }
 
       const script = document.createElement('script');
       script.src = src;
       script.async = isAsync;
-      script.onload = () => resolve(true);
+      script.onload = () => resolve();
       script.onerror = (err) => reject(new Error(`Failed to load script: ${src}`));
       document.body.appendChild(script);
     });
   }, []);
 
-  const loadStylesheet = useCallback((href: string): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
+  const loadStylesheet = useCallback((href: string): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
       const existing = document.querySelector(`link[href="${href}"]`);
       if (existing) {
-        resolve(true);
+        resolve();
         return;
       }
 
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.onload = () => resolve(true);
+      link.onload = () => resolve();
       link.onerror = (err) => reject(new Error(`Failed to load stylesheet: ${href}`));
       document.head.appendChild(link);
     });
   }, []);
 
-  const initializeWidget = useCallback(async () => {
-    if (!isVisible) return;
+  const initializeWidget = useCallback(async (): Promise<() => void> => {
+    if (!isVisible) return () => {};
     
     try {
       const container = document.getElementById(widgetContainerId.current);
@@ -91,7 +92,6 @@ export function MondialRelayWidget({
       // Ensure container is visible and has dimensions
       container.style.minHeight = '500px';
       container.style.visibility = 'visible';
-      container.style.opacity = '1';
 
       if (!window.$) {
         throw new Error("jQuery not loaded");
@@ -118,8 +118,8 @@ export function MondialRelayWidget({
           if (input) {
             (input as HTMLInputElement).value = '75001';
             const searchButton = document.querySelector('.MR-Search-Button');
-            if (searchButton instanceof HTMLElement) {
-              searchButton.click();
+            if (searchButton) {
+              (searchButton as HTMLButtonElement).click();
             }
           }
         },
@@ -135,9 +135,34 @@ export function MondialRelayWidget({
         },
       });
 
+      // Add event listener for when a parcel shop is selected
+      const handleParcelShopSelected = (event: any) => {
+        const point = event.detail;
+        if (point) {
+          const relayPoint = {
+            id: point.id,
+            name: point.nom,
+            address: point.adresse1,
+            city: point.ville,
+            zipCode: point.cp,
+            country: point.pays
+          };
+          setSelectedPoint(relayPoint);
+          // On ne déclenche pas encore onSelect, on attend la validation
+        }
+      };
+      
+      container.addEventListener('MR-ParcelShopSelected', handleParcelShopSelected);
+      
       onReady?.();
       setIsLoading(false);
-      return true;
+      
+      // Nettoyage de l'event listener
+      const cleanup = () => {
+        container.removeEventListener('MR-ParcelShopSelected', handleParcelShopSelected);
+      };
+      
+      return cleanup;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to initialize widget";
       console.error("Widget initialization error:", errorMessage);
@@ -148,14 +173,14 @@ export function MondialRelayWidget({
     }
   }, [isVisible, defaultPostalCode, onSelect, onReady, onError]);
 
-  const loadDependencies = useCallback(async () => {
+  const loadDependencies = useCallback(async (): Promise<void> => {
     if (!isVisible) return;
     
     setIsLoading(true);
     setError(null);
     retryCount.current = 0;
 
-    const tryInitialize = async () => {
+    const tryInitialize = async (): Promise<void> => {
       try {
         // Load jQuery if not already loaded
         if (!window.jQuery) {
@@ -169,9 +194,9 @@ export function MondialRelayWidget({
           loadScript("https://unpkg.com/leaflet/dist/leaflet.js"),
         ]);
 
-        // Load Mondial Relay Widget if not already loaded
+        // Load Mondial Relay widget if not already loaded
         if (typeof window.MR_ParcelShopPicker === 'undefined') {
-          await loadScript("https://widget.mondialrelay.com/parcelshop-picker/jquery.plugin.mondialrelay.parcelshoppicker.min.js");
+          await loadScript("https://widget.mondialrelay.com/parcelshop-picker/jquery.plugin.mondialrelay.parcelshoppicker.min.js", false);
         }
 
         // Wait for DOM to be ready
@@ -208,6 +233,8 @@ export function MondialRelayWidget({
       console.error('Error loading widget:', errorMsg);
       setError(errorMsg);
       onError?.(errorMsg);
+      throw err;
+    } finally {
       setIsLoading(false);
     }
   }, [isVisible, loadScript, loadStylesheet, initializeWidget, onError]);
@@ -217,6 +244,33 @@ export function MondialRelayWidget({
     if (isVisible && !widgetInitialized.current) {
       loadDependencies();
     }
+    
+    // Fonction pour styliser le bandeau supérieur
+    const styleHeader = () => {
+      const header = document.querySelector('.MR-Header') as HTMLElement | null;
+      if (header) {
+        header.style.backgroundColor = '#000';
+        header.style.color = '#fff';
+      }
+    };
+    
+    // Observer les changements dans le DOM pour appliquer le style au header
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+          styleHeader();
+        }
+      });
+    });
+    
+    // Démarrer l'observation
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Appliquer le style immédiatement si l'élément est déjà présent
+    styleHeader();
+    
+    // Nettoyage
+    return () => observer.disconnect();
   }, [isVisible, loadDependencies]);
 
   // Cleanup function to prevent memory leaks
@@ -226,7 +280,91 @@ export function MondialRelayWidget({
     };
   }, []);
 
-  // Ajout d'un style global pour cacher le message d'avertissement
+  // Ajout d'un style global pour le bandeau supérieur
+  useEffect(() => {
+    // Style pour le bandeau supérieur
+    const styleHeader = () => {
+      // Créer un style global
+      const styleId = 'mondial-relay-header-style';
+      let style = document.getElementById(styleId) as HTMLStyleElement | null;
+      
+      if (!style) {
+        style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          /* Cibler tous les en-têtes potentiels */
+          .MR-Header, 
+          [class*="header"], 
+          [class*="Header"],
+          .mr-widget-header,
+          .mr-header,
+          .mr-widget .header,
+          .mr-widget > div:first-child {
+            background-color: #000 !important;
+            color: #fff !important;
+            border-bottom: 1px solid #333 !important;
+          }
+          
+          /* Cibler le texte dans l'en-tête */
+          .MR-Header *,
+          [class*="header"] *,
+          [class*="Header"] *,
+          .mr-widget-header *,
+          .mr-header *,
+          .mr-widget .header * {
+            color: #fff !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      // Appliquer directement le style aux éléments existants
+      const selectors = [
+        '.MR-Header',
+        '[class*="header"]',
+        '[class*="Header"]',
+        '.mr-widget-header',
+        '.mr-header',
+        '.mr-widget .header',
+        '.mr-widget > div:first-child'
+      ];
+      
+      selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+          const el = element as HTMLElement;
+          if (el.offsetParent !== null) { // Vérifier si l'élément est visible
+            el.style.backgroundColor = '#000';
+            el.style.color = '#fff';
+            
+            // Forcer la couleur du texte pour tous les enfants
+            const allChildren = el.getElementsByTagName('*');
+            for (let i = 0; i < allChildren.length; i++) {
+              const child = allChildren[i] as HTMLElement;
+              child.style.color = '#fff';
+            }
+          }
+        });
+      });
+    };
+    
+    // Appeler styleHeader immédiatement
+    styleHeader();
+    
+    // Et aussi après un délai pour s'assurer que le widget est chargé
+    const timer = setInterval(styleHeader, 500);
+    
+    // Nettoyage
+    return () => {
+      clearInterval(timer);
+      const style = document.getElementById('mondial-relay-header-style');
+      if (style && style.parentNode) {
+        style.parentNode.removeChild(style);
+      }
+    };
+  }, []);
+
+  // Style pour cacher le message d'avertissement
   useEffect(() => {
     const hideWarning = () => {
       // Sélecteurs CSS valides
@@ -332,8 +470,23 @@ export function MondialRelayWidget({
       
       {/* Widget container */}
       {!isLoading && !error && (
-        <div className="w-full text-black" style={{ minHeight: '500px', color: 'black' }}>
-          {/* This div will be replaced by the widget */}
+        <div className="w-full flex flex-col" style={{ minHeight: '500px' }}>
+          <div className="w-full flex-grow">
+            {/* Widget Mondial Relay */}
+            <div className="w-full h-full" style={{ color: 'black' }}></div>
+          </div>
+          
+          {/* Bouton de validation */}
+          {selectedPoint && (
+            <div className="bg-black p-4 flex justify-center">
+              <button
+                onClick={() => onSelect(selectedPoint)}
+                className="bg-white text-black px-6 py-2 rounded-md font-medium hover:bg-gray-100 transition-colors"
+              >
+                Valider le point relais
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

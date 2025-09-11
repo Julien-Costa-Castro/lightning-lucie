@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Package } from 'lucide-react';
 import { MondialRelayWidget } from './MondialRelayWidget';
 import { PaymentForm } from './PaymentForm';
+import { useCart } from '@/hooks/useCart';
 
 // Configurez votre clé publique Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
@@ -30,6 +31,7 @@ interface CheckoutProcessProps {
 }
 
 export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSuccess, onCancel }) => {
+  const { clearCart } = useCart();
   // États pour la gestion du point relais
   const [selectedPoint, setSelectedPoint] = useState<RelayPoint | null>(null);
   const [showRelaySelector, setShowRelaySelector] = useState(false);
@@ -129,6 +131,12 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
     }
   };
 
+  const handlePaymentSuccess = useCallback(() => {
+    // Vider le panier après une commande réussie
+    clearCart();
+    onSuccess();
+  }, [onSuccess, clearCart]);
+
   if (clientSecret) {
     return (
       <Elements 
@@ -149,7 +157,7 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
         <div className="max-w-2xl mx-auto p-6">
           <h2 className="text-2xl font-bold mb-6">Paiement sécurisé</h2>
           <PaymentForm 
-            onSuccess={() => onSuccess()} 
+            onSuccess={handlePaymentSuccess} 
             onError={(message) => setWidgetError(message)} 
           />
         </div>
@@ -159,23 +167,23 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
 
   // Rendu du récapitulatif de commande
   const renderOrderSummary = () => (
-    <Card>
+    <Card className="font-sans">
       <CardHeader>
-        <CardTitle>Récapitulatif de la commande</CardTitle>
+        <CardTitle className="font-sans">Récapitulatif de la commande</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-4 font-sans">
           {items.map((item) => (
             <div key={item.id} className="flex justify-between items-center">
               <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-500">Quantité: {item.quantity}</p>
+                <p className="font-medium font-sans">{item.name}</p>
+                <p className="text-sm text-gray-500 font-sans">Quantité: {item.quantity}</p>
               </div>
-              <p className="font-medium">{(item.price * item.quantity).toFixed(2)} €</p>
+              <p className="font-medium font-sans">{(item.price * item.quantity).toFixed(2)} €</p>
             </div>
           ))}
           <div className="border-t pt-4 mt-4">
-            <div className="flex justify-between font-bold">
+            <div className="flex justify-between font-bold font-sans">
               <p>Total</p>
               <p>{calculateTotal().toFixed(2)} €</p>
             </div>
@@ -225,11 +233,11 @@ export const CheckoutProcess: React.FC<CheckoutProcessProps> = ({ items, onSucce
   const renderRelayPointModal = () => (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
-        <div className="p-4 border-b flex justify-between items-center">
+        <div className="p-4 bg-black text-white flex justify-between items-center rounded-t-lg">
           <h3 className="text-lg font-semibold">Sélectionnez un point relais</h3>
           <button
             onClick={() => setShowRelaySelector(false)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-white hover:text-gray-300 focus:outline-none"
           >
             <span className="text-2xl">&times;</span>
           </button>
