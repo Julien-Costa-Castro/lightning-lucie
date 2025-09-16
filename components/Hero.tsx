@@ -11,11 +11,11 @@ import { PlanetaryOrbit } from './PlanetaryOrbit';
 
 export function Hero() {
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center px-4 pt-32 pb-40">
+    <section className="relative min-h-[80vh] md:min-h-[85vh] flex items-center justify-center px-4 pt-24 md:pt-32 pb-20 md:pb-40 overflow-hidden">
       {/* Hero Content */}
       <div className="max-w-6xl mx-auto text-center space-y-12">
         {/* Couverture BD avec effet 3D amélioré */}
-        <div className="relative w-64 h-96 mx-auto mb-20" style={{ perspective: '1000px' }}>
+        <div className="relative w-48 h-72 md:w-64 md:h-96 mx-auto mb-12 md:mb-20" style={{ perspective: '1000px' }}>
           <motion.div 
             className="relative w-full h-full"
             style={{

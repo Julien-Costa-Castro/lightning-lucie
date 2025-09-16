@@ -14,7 +14,9 @@ import {
   User, 
   LogIn, 
   LogOut,
-  UserPlus
+  UserPlus,
+  Menu,
+  X
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/contexts/AuthContext"
@@ -42,13 +44,11 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
 
   useEffect(() => {
     setMounted(true)
-  }, [])
-
-  useEffect(() => {
+    
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
     }
-
+    
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
@@ -57,10 +57,10 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
   if (!mounted) return null
 
   return (
-    <div className="fixed top-5 left-0 right-0 z-[9999]">
-      <div className="flex justify-center pt-4 pb-2">
+    <div className="fixed top-0 left-0 right-0 z-[9999] bg-gradient-to-b from-black/80 to-transparent pt-2 pb-1 px-2 sm:px-4 md:px-8">
+      <div className="flex justify-center">
         <motion.div 
-          className="flex items-center gap-1 glass-effect border border-white/10 py-1 px-1 rounded-full shadow-xl chrome-effect"
+          className="flex items-center justify-between glass-effect border border-white/10 py-1 px-0.5 rounded-full shadow-xl chrome-effect w-full max-w-2xl mx-2 md:max-w-4xl"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{
@@ -69,7 +69,8 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
             damping: 25,
           }}
         >
-          {items.map((item) => {
+          <div className="flex items-center justify-between w-full px-1">
+            {items.map((item) => {
             const Icon = item.icon
             const isActive = activeTab === item.name || pathname === item.url
             const isHovered = hoveredTab === item.name
@@ -114,23 +115,19 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
                   </motion.div>
                 )}
                 
-                <div className="flex items-center gap-2">
-                  <Icon className="h-4 w-4 flex-shrink-0" />
-                  <motion.span
-                    className="hidden md:inline relative z-10"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
+                <div className="flex items-center justify-center flex-1 min-w-0">
+                  <motion.div 
+                    className="relative z-10 flex items-center justify-center p-1.5 sm:p-2 rounded-full w-full"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    {item.name}
-                  </motion.span>
-                  <motion.span 
-                    className="md:hidden relative z-10"
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Icon size={18} strokeWidth={2.5} />
-                  </motion.span>
+                    <div className="flex items-center justify-center gap-1.5 px-2 sm:px-3 w-full">
+                      <Icon className="h-4 w-4 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
+                      <span className="hidden sm:inline text-sm truncate">
+                        {item.name}
+                      </span>
+                    </div>
+                  </motion.div>
                 </div>
                 
                 <AnimatePresence>
@@ -146,8 +143,10 @@ export function AnimeNavBar({ items, className, defaultActive = "Accueil" }: Nav
               </Link>
             )
           })}
+          </div>
         </motion.div>
       </div>
+
     </div>
   )
 }

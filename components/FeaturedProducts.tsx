@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 export function FeaturedProducts() {
   return (
-    <section className="pt-12 md:pt-20 pb-24 md:pb-32 px-4 relative">
+    <section className="py-16 md:py-24 px-4 relative overflow-hidden">
       {/* Fond légèrement assombri pour améliorer la lisibilité */}
       <div className="absolute inset-0 -z-10 bg-black/20"></div>
       
@@ -30,15 +30,15 @@ export function FeaturedProducts() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-4">
           {[1, 2, 3].map((_, index) => (
             <Card
               key={`lucie-${index}`}
-              className="glass-effect hover:chrome-glow transition-all duration-500 group relative overflow-hidden border border-white/10 hover:border-white/20"
+              className="glass-effect hover:chrome-glow transition-all duration-500 group relative overflow-hidden border border-white/10 hover:border-white/20 h-full flex flex-col"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <CardContent className="p-6 flex flex-col items-center">
-                <div className="aspect-square w-full mb-6 flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-square w-full mb-4 md:mb-6 flex items-center justify-center relative overflow-hidden px-4">
                   <div className="relative w-48 h-48">
                     <Image 
                       src="/images/personnage.png" 
@@ -51,9 +51,9 @@ export function FeaturedProducts() {
                   </div>
                 </div>
                 
-                <div className="text-center">
+                <div className="text-center px-4 pb-4 flex-1 flex flex-col">
                   <h3 className="text-2xl font-bold text-white mb-3">LUCIE</h3>
-                  <p className="text-white/80 text-sm">
+                  <p className="text-white/80 text-sm flex-1 flex items-center justify-center">
                     Jeune femme amnésique de 17 ans aux pouvoirs
                     extraordinaires.
                     <br />
@@ -65,7 +65,7 @@ export function FeaturedProducts() {
           ))}
         </div>
 
-        <div className="text-center mt-16">
+        <div className="text-center mt-12 md:mt-16 px-4">
           <Link href="/boutique">
             <Button 
               variant="outline" 

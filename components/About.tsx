@@ -35,26 +35,26 @@ export function About() {
   
   const transform = useMotionTemplate`perspective(1000px) rotateX(${cardX}deg) rotateY(${cardY}deg)`;
   return (
-    <section className="py-32 px-4 relative">
+    <section className="py-16 md:py-24 lg:py-32 px-4 relative overflow-hidden">
       {/* Fond légèrement assombri pour correspondre à la section Collection */}
       <div className="absolute inset-0 -z-10 bg-black/10"></div>
       
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="space-y-10">
-            <div className="space-y-6">
-              <h2 className="text-5xl md:text-6xl font-black text-white">
+            <div className="space-y-4 md:space-y-6">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white">
                 L'Univers de Kora
               </h2>
             </div>
             
-            <div className="space-y-8 text-white/80">
-              <p className="text-xl leading-relaxed">
+            <div className="space-y-6 md:space-8 text-white/80">
+              <p className="text-lg md:text-xl leading-relaxed">
                 En 2360, la Terre devient inhabitable. L'humanité se lance dans une quête 
                 épique de deux siècles pour trouver de nouveaux mondes habitables.
               </p>
               
-              <p className="text-xl leading-relaxed">
+              <p className="text-lg md:text-xl leading-relaxed">
                 La découverte du système solaire Kora en 2601 marque un tournant décisif. 
                 Ce système parfait devient le théâtre d'aventures extraordinaires où notre 
                 héroïne Lucie révèle ses pouvoirs électriques dans les arènes de combat.
@@ -63,7 +63,7 @@ export function About() {
           </div>
 
           <div 
-            className="w-[30rem] h-[40rem] mx-auto relative group"
+            className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-none lg:w-[30rem] h-[28rem] sm:h-[32rem] md:h-[36rem] lg:h-[40rem] mx-auto relative group mt-12 lg:mt-0"
             onMouseMove={onMouseMove}
             onMouseLeave={onMouseLeave}
           >

@@ -119,59 +119,70 @@ export function Cart() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
           {/* Articles du panier */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {items.map((item) => (
               <Card key={item.id} className="glass-effect lightning-border hover:lightning-glow transition-all duration-500 group">
-                <CardContent className="p-8">
-                  <div className="flex items-center space-x-6">
-                    <div className="w-24 h-24 electric-gradient rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <p className="text-sm text-gray-500" style={{ fontFamily: 'Arial, sans-serif' }}>
+                <CardContent className="p-4 sm:p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 electric-gradient rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300 mx-auto sm:mx-0">
+                      <p className="text-xs sm:text-sm text-gray-500" style={{ fontFamily: 'Arial, sans-serif' }}>
                         {item.isLimited ? 'Stock limité' : 'En stock'}
                       </p>
                     </div>
                     
-                    <div className="flex-1">
-                      <h3 className="font-bold text-xl text-white group-hover:text-blue-300 transition-colors" style={{ fontFamily: 'inherit' }}>{item.name}</h3>
-                      <p className="text-gray-400 mt-1" style={{ fontFamily: 'Arial, sans-serif' }}>{item.category}</p>
-                      <p className="text-blue-400 font-black text-lg mt-2" style={{ fontFamily: 'Arial, sans-serif' }}>{item.price}€</p>
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="font-bold text-lg sm:text-xl text-white group-hover:text-blue-300 transition-colors" style={{ fontFamily: 'inherit' }}>{item.name}</h3>
+                      <p className="text-gray-400 text-sm sm:text-base mt-1" style={{ fontFamily: 'Arial, sans-serif' }}>{item.category}</p>
+                      <p className="text-blue-400 font-black text-base sm:text-lg mt-1 sm:mt-2" style={{ fontFamily: 'Arial, sans-serif' }}>{item.price}€</p>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
-                        className="h-10 w-10 border-white/20 text-white hover:bg-white/5 rounded-xl lightning-border"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
-                        className="w-20 text-center glass-effect border-white/20 text-white rounded-xl"
-                        style={{ fontFamily: 'Arial, sans-serif' }}
-                      />
-                      
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="h-10 w-10 border-white/20 text-white hover:bg-white/5 rounded-xl lightning-border"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                    <div className="flex items-center justify-center sm:justify-end space-x-2 sm:space-x-3">
+                      <div className="flex items-center space-x-1 sm:space-x-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateQuantity(item.id, Math.max(0, item.quantity - 1));
+                          }}
+                          className="h-8 w-8 sm:h-10 sm:w-10 border-white/20 text-white hover:bg-white/5 rounded-lg sm:rounded-xl lightning-border"
+                        >
+                          <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                        
+                        <Input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
+                          className="w-12 sm:w-16 h-8 sm:h-10 text-center glass-effect border-white/20 text-white rounded-lg sm:rounded-xl text-sm sm:text-base"
+                          style={{ fontFamily: 'Arial, sans-serif' }}
+                        />
+                        
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateQuantity(item.id, item.quantity + 1);
+                          }}
+                          className="h-8 w-8 sm:h-10 sm:w-10 border-white/20 text-white hover:bg-white/5 rounded-lg sm:rounded-xl lightning-border"
+                        >
+                          <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                        </Button>
+                      </div>
                       
                       <Button
                         variant="destructive"
                         size="icon"
-                        onClick={() => removeFromCart(item.id)}
-                        className="h-10 w-10 ml-4 rounded-xl"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromCart(item.id);
+                        }}
+                        className="h-8 w-8 sm:h-10 sm:w-10 ml-1 sm:ml-4 rounded-lg sm:rounded-xl"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                     </div>
                   </div>
@@ -181,22 +192,22 @@ export function Cart() {
           </div>
 
           {/* Résumé de commande */}
-          <div>
+          <div className="lg:sticky lg:top-8">
             <Card className="glass-effect lightning-border hover:lightning-glow transition-all duration-500 sticky top-8">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-black text-white mb-8" style={{ fontFamily: 'Arial, sans-serif' }}>Résumé</h3>
+              <CardContent className="p-6 sm:p-8">
+                <h3 className="text-xl sm:text-2xl font-black text-white mb-6 sm:mb-8" style={{ fontFamily: 'Arial, sans-serif' }}>Résumé</h3>
                 
-                <div className="space-y-6 mb-8">
-                  <div className="flex justify-between text-gray-300 text-lg">
+                <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
+                  <div className="flex justify-between text-gray-300 text-base sm:text-lg">
                     <span style={{ fontFamily: 'Arial, sans-serif' }}>Sous-total</span>
                     <span className="font-semibold" style={{ fontFamily: 'Arial, sans-serif' }}>{getTotal().toFixed(2)}€</span>
                   </div>
-                  <div className="flex justify-between text-gray-300 text-lg">
+                  <div className="flex justify-between text-gray-300 text-base sm:text-lg">
                     <span style={{ fontFamily: 'Arial, sans-serif' }}>Livraison</span>
                     <span className="font-semibold text-green-400" style={{ fontFamily: 'Arial, sans-serif' }}>Gratuite</span>
                   </div>
-                  <div className="border-t border-white/10 pt-6">
-                    <div className="flex justify-between font-black text-white text-2xl">
+                  <div className="border-t border-white/10 pt-4 sm:pt-6">
+                    <div className="flex justify-between font-black text-white text-xl sm:text-2xl">
                       <span style={{ fontFamily: 'Arial, sans-serif' }}>Total</span>
                       <span className="text-blue-400" style={{ fontFamily: 'Arial, sans-serif' }}>{getTotal().toFixed(2)}€</span>
                     </div>
