@@ -1,5 +1,8 @@
 /* stylelint-disable */
 /* Les directives @tailwind sont nécessaires pour le bon fonctionnement de Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 /* stylelint-enable */
 
 @layer base {
